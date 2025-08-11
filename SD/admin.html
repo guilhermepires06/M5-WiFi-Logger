@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin</title>
+
+    <style>
+      /* =========================
+         Tema CLARO (cinza & branco)
+         ========================= */
+      :root {
+        --bg:    #f7f7f8;  /* fundo */
+        --panel: #ffffff;  /* cartões/painéis */
+        --text:  #1f1f1f;  /* texto */
+        --muted: #6b7280;  /* texto secundário */
+        --line:  #e6e7ea;  /* linhas/divisórias */
+        --pre:   #f3f4f6;  /* fundo do <pre> */
+        --mark:  #e9e9e9;  /* realce (cinza claro) */
+        --accent:#b9bcc2;  /* “destaque” em cinza */
+        --shadow:0 12px 28px rgba(0,0,0,.12);
+      }
+
+      /* =========================
+         Tema ESCURO (tons de cinza)
+         ========================= */
+      body.dark {
+        --bg:    #121315;
+        --panel: #1b1d21;
+        --text:  #e8e8e8;
+        --muted: #a0a4ab;
+        --line:  #2a2d33;
+        --pre:   #14171b;
+        --mark:  #2a2a2a;
+        --accent:#8f949c;
+        --shadow:0 18px 40px rgba(0,0,0,.35);
+      }
+
+      /* ===== Reset & base ===== */
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 14px/1.55 system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      }
+
+      /* ===== Cabeçalho ===== */
+      header {
+        position: sticky; top: 0; z-index: 10;
+        background: linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,0));
+        backdrop-filter: blur(6px);
+        border-bottom: 1px solid var(--line);
+        padding: 14px 18px;
+      }
+      h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: .2px; }
+
+      /* ===== Layout ===== */
+      .container { max-width: 980px; margin: 16px auto; padding: 0 14px; }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .card-hd {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--line);
+        flex-wrap: wrap;
+      }
+      .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      .pill {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 6px 10px; border: 1px solid var(--line);
+        border-radius: 999px; background: #f0f1f3; color: var(--muted);
+        font-size: 12px;
+      }
+      body.dark .pill { background: #202328; }
+
+      .spacer { flex: 1; }
+
+      .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+      .btn, button {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 8px 12px; border-radius: 10px;
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,0));
+        color: var(--text); text-decoration: none; cursor: pointer;
+        transition: transform .06s ease, background .2s ease;
+      }
+      .btn:hover, button:hover { transform: translateY(-1px); }
+      .btn.primary {
+        border-color: var(--accent);
+        background: linear-gradient(0deg, var(--accent), var(--accent));
+        color: #fff;
+      }
+
+      input[type="text"] {
+        height: 34px; padding: 0 10px; min-width: 220px;
+        border-radius: 10px; border: 1px solid var(--line);
+        background: #fff; color: var(--text); outline: none;
+      }
+      body.dark input[type="text"] { background: #1f2328; }
+
+      label.switch {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 12px; color: var(--muted); user-select: none;
+      }
+
+      /* ===== Área do log ===== */
+      pre {
+        margin: 0; padding: 14px; background: var(--pre);
+        border-top: 1px solid var(--line); max-height: 70vh; overflow: auto;
+      }
+      pre code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+        font-size: 12px; white-space: pre; /* sem quebra por padrão */
+      }
+      .wrap code { white-space: pre-wrap; word-break: break-word; }
+
+      mark {
+        background: var(--mark); color: inherit;
+        padding: 0 2px; border-radius: 3px;
+      }
+    </style>
+  </head>
+
+  <!-- começa em TEMA CLARO (cinza/branco). Se adicionar .dark no body, muda para cinza escuro -->
+  <body class="">
+    <!-- Cabeçalho -->
+    <header>
+      <h1>Área de Administração</h1>
+    </header>
+
+    <!-- Conteúdo -->
+    <div class="container">
+      <div class="card">
+        <!-- Topo do cartão: metadados e controles -->
+        <div class="card-hd">
+          <div class="row">
+            <span class="pill" id="meta">Atualizado:</span>
+          </div>
+
+          <div class="spacer"></div>
+
+          <div class="controls">
+            <input id="q" type="text" placeholder="Filtrar (ex.: Username: alice)" />
+            <label class="switch">
+              <input id="auto" type="checkbox" checked />
+              Atualizar auto (3s)
+            </label>
+            <label class="switch">
+              <input id="wrap" type="checkbox" checked />
+              Quebra de linha
+            </label>
+            <label class="switch">
+              <input id="theme" type="checkbox" />
+              Tema escuro
+            </label>
+            <button id="copyBtn" class="btn">Copiar</button>
+          </div>
+        </div>
+
+        <!-- Corpo: conteúdo de /admin-data -->
+        <pre id="pre" class="wrap"><code id="log">Carregando…</code></pre>
+      </div>
+    </div>
+
+    <script>
+      // refs
+      const elLog   = document.getElementById('log');
+      const elPre   = document.getElementById('pre');
+      const elMeta  = document.getElementById('meta');
+      const elQ     = document.getElementById('q');
+      const elAuto  = document.getElementById('auto');
+      const elWrap  = document.getElementById('wrap');
+      const elTheme = document.getElementById('theme');
+      const elCopy  = document.getElementById('copyBtn');
+
+      let fullText = '';
+      let timer = null;
+
+      // util: escapa HTML
+      function escapeHtml(s){
+        return s
+          .replaceAll('&','&amp;')
+          .replaceAll('<','&lt;')
+          .replaceAll('>','&gt;')
+          .replaceAll('"','&quot;')
+          .replaceAll("'","&#39;");
+      }
+
+      // realce do filtro
+      function highlight(text, query){
+        if(!query) return escapeHtml(text);
+        try{
+          const rx = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi');
+          return escapeHtml(text).replace(rx, m => `<mark>${m}</mark>`);
+        }catch(e){
+          return escapeHtml(text);
+        }
+      }
+
+      // aplica filtro e atualiza meta
+      function applyFilter(){
+        const q = elQ.value.trim();
+        const lines = fullText.split(/\r?\n/);
+        const filtered = q
+          ? lines.filter(line => line.toLowerCase().includes(q.toLowerCase()))
+          : lines;
+
+        elLog.innerHTML = highlight(filtered.join('\n'), q);
+
+        const total = lines.filter(l => l.length>0).length;
+        const vis   = filtered.filter(l => l.length>0).length;
+        const now   = new Date();
+        elMeta.textContent = `Linhas: ${vis}/${total} • Atualizado: ${now.toLocaleTimeString()}`;
+      }
+
+      // carrega /admin-data
+      async function load(){
+        try{
+          const res = await fetch('/admin-data', { cache: 'no-store' });
+          if(!res.ok) throw new Error('HTTP '+res.status);
+          fullText = await res.text();
+          applyFilter();
+        }catch(err){
+          elLog.textContent = 'Erro ao carregar /senhas.txt';
+        }
+      }
+
+      // auto refresh 3s
+      function startAuto(){
+        stopAuto();
+        if(elAuto.checked) timer = setInterval(load, 3000);
+      }
+      function stopAuto(){
+        if(timer){ clearInterval(timer); timer = null; }
+      }
+
+      // eventos
+      elQ.addEventListener('input', applyFilter);
+      elAuto.addEventListener('change', startAuto);
+      elWrap.addEventListener('change', () => {
+        elPre.classList.toggle('wrap', elWrap.checked);
+      });
+      elTheme.addEventListener('change', () => {
+        document.body.classList.toggle('dark', elTheme.checked);
+      });
+      elCopy.addEventListener('click', async () => {
+        const txt = elLog.textContent || '';
+        try{
+          await navigator.clipboard.writeText(txt);
+          elCopy.textContent = 'Copiado!';
+        }catch(e){
+          const sel = window.getSelection();
+          const rng = document.createRange();
+          rng.selectNodeContents(elLog);
+          sel.removeAllRanges(); sel.addRange(rng);
+          document.execCommand('copy');
+          sel.removeAllRanges();
+          elCopy.textContent = 'Copiado!';
+        }
+        setTimeout(()=> elCopy.textContent='Copiar', 1200);
+      });
+
+      // init: tema claro, wrap ligado, carrega e inicia auto
+      (async () => {
+        document.body.classList.remove('dark'); // começa claro (cinza/branco)
+        elTheme.checked = false;
+        elWrap.checked = true;
+        elPre.classList.add('wrap');
+
+        await load();
+        startAuto();
+      })();
+    </script>
+  </body>
+</html>
